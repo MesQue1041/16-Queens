@@ -1,10 +1,9 @@
 import './App.css';
-import Chessboard from './Chessboard';
-
+import GameLogic from './GameLogic';
 function App() {
   return (
     <div className="App">
-      < Chessboard />
+      <  GameLogic/>
     </div>
   );
 }
