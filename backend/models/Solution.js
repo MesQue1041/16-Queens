@@ -4,6 +4,7 @@ const solutionSchema = new mongoose.Schema({
   solution: {
     type: [[Number]],
     required: true,
+    unique: true,
   },
   userName: {
     type: String,

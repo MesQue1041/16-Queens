@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const generate16QueensSolutions = require('./utils/queenAlgorithm');
 const Statistics = require('./models/Statistics');
 const cors = require('cors');
+const { checkSolution } = require('./utils/queenCheck');
 
 const app = express();
 const PORT = 5000;
@@ -30,7 +31,6 @@ const startServer = async () => {
         
         for (const solution of solutions) {
           try {
-            // Upsert operation: Insert if not exists, update otherwise
             await Statistics.updateOne({ solution }, { solution }, { upsert: true });
           } catch (insertError) {
             console.error('Error upserting solution:', insertError);
@@ -42,7 +42,6 @@ const startServer = async () => {
         console.error('Error initializing solutions:', error);
       }
     };
-    
     
     await initializeDatabaseWithSolutions();
     console.log('Database initialization complete.');
