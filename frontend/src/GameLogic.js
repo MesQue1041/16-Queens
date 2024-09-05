@@ -1,7 +1,25 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Chessboard from './Chessboard';
 import './GameLogic.css';
+
+// Move the submitUserSolution function to this file or import it if it is in a separate file.
+const submitUserSolution = async (board, userName) => {
+  try {
+    const response = await fetch('http://localhost:5000/api/solutions/check', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ board, userName }),
+    });
+
+    const data = await response.json();
+    return data.message; // Return the message to handle it in the component
+  } catch (error) {
+    console.error('Error submitting solution:', error);
+    return 'An error occurred while submitting the solution.';
+  }
+};
 
 const GameLogic = () => {
   const [board, setBoard] = useState(Array(16).fill().map(() => Array(16).fill(0)));
@@ -30,16 +48,12 @@ const GameLogic = () => {
     }
 
     if (!userName) {
-      setMessage('Please enter your name !');
+      setMessage('Please enter your name!');
       return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:5000/api/solutions/check', { board, userName });
-      setMessage(response.data.message);
-    } catch (error) {
-      setMessage(error.response?.data?.message || 'An error occurred.');
-    }
+    const resultMessage = await submitUserSolution(board, userName);
+    setMessage(resultMessage);
   };
 
   return (
