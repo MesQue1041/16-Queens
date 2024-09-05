@@ -30,12 +30,10 @@ const startServer = async () => {
         
         for (const solution of solutions) {
           try {
-            const exists = await Statistics.findOne({ solution });
-            if (!exists) {
-              await Statistics.create({ solution });
-            }
+            // Upsert operation: Insert if not exists, update otherwise
+            await Statistics.updateOne({ solution }, { solution }, { upsert: true });
           } catch (insertError) {
-            console.error('Error inserting solution:', insertError);
+            console.error('Error upserting solution:', insertError);
           }
         }
         
@@ -44,6 +42,7 @@ const startServer = async () => {
         console.error('Error initializing solutions:', error);
       }
     };
+    
     
     await initializeDatabaseWithSolutions();
     console.log('Database initialization complete.');
